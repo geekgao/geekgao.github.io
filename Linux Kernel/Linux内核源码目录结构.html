@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>内核源码目录结构</title>
+
+    <meta charset="UTF-8"/>
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+
+    <meta name="HandheldFriendly" content="true"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link href="../asset/farbox/basic.css" type="text/css" rel="stylesheet"/>
+    <link href="../asset/farbox/main.css" type="text/css" rel="stylesheet"/>
+
+    <style type="text/css">
+        
+            span.md_line{margin-bottom:0.5em; display:block; line-height:1.89}
+            .md_line br{ display: none;}
+            
+    </style>
+
+    <script>
+        var flowchat_options = {
+            'x': 0, 'y': 0, 'line-width': 1, 'line-length': 50, 'text-margin': 10, 'font-size': 13,
+            'font-color': '#3c3c3c', 'line-color': '#666666', 'element-color': '#666666', 'fill': 'transparent',
+            'yes-text': 'yes', 'no-text': 'no', 'arrow-end': 'block', 'class': 'flowchart', 'scale': 1,
+            'symbols': { 'start': {}, 'end': {}, 'condition': {}, 'inputoutput': {}, 'operation': {}, 'subroutine': {}}
+        }
+    </script>
+    <script type="text/javascript" src="../asset/other/raphael-min.js"></script>
+    <script type="text/javascript" src="../asset/other/flowchart.js"></script>
+    <script type="text/javascript" src="../asset/other/echarts.min.js"></script>
+
+
+</head>
+
+<body>
+    
+        <a href="../index.html" id="go_to_home"> &lt; home </a>
+    
+    <div id="sidebar">
+        <ul id="sidebar_body">
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Docker</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Docker/Docker安装说明.html" class="">Docker安装说明</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Life</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Life/吐给27岁自己的槽.html" class="">吐给27岁自己的槽</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Linux Kernel</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/Linux内核源码目录结构.html" class="selected">内核源码目录结构</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/开机后引导流程.html" class="">开机后引导流程</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Troubleshooting</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Troubleshooting/Linux TCP网络程序故障排错.html" class="">Linux TCP网络程序故障排错</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">邪门歪道</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../邪门歪道/制作一只木马监控你的女盆友.html" class="">制作一只木马监控你的女盆友</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../邪门歪道/在VPS上创建一个洋葱匿名站点.html" class="">在VPS上创建一个洋葱匿名站点</a>
+                </li>
+                
+            </ul>
+            
+        
+        </ul>
+    </div>
+
+    <div id="main">
+        <div class="content_body">
+            <h1 class="title"> 内核源码目录结构 </h1>
+            <div class="doc_post"> <ul>
+<li><strong>Documentation</strong>
+<p class="md_block">
+    <span class="md_line">一些文档，主要用来描述模块功能和协议规范神马的</span>
+</p></li>
+<li><strong>arch</strong>
+<p class="md_block">
+    <span class="md_line">不同平台体系结构的相关代码：每种体系结构对应一个子目录，子目录中主要包含了kernel,lib,mm目录分别对应了信号量处理实现、通用函数库实现、内存管理功能实现。</span>
+</p></li>
+<li><strong>block</strong>
+<p class="md_block">
+    <span class="md_line">Block子系统代码，2.6.15的内核开始，从drivers和fs目录中抽取独立出来。</span>
+</p></li>
+<li><strong>crypto</strong>
+<p class="md_block">
+    <span class="md_line">内核常用加密、散列和压缩算法代码。</span>
+</p></li>
+<li><strong>drivers</strong>
+<p class="md_block">
+    <span class="md_line">各类驱动程序的实现，如USB总线、蓝牙、PCI总线、显卡驱动等等。</span>
+</p></li>
+<li><strong>firmware</strong></li>
+<li><strong>fs</strong>
+<p class="md_block">
+    <span class="md_line">虚拟文件系统（VFS）代码，内核中支持的所有原生文件系统各自为一个子目录，如ext3、ntfs、fat等。</span>
+</p></li>
+<li><strong>include</strong>
+<p class="md_block">
+    <span class="md_line">内核源码依赖的绝大部分头文件。</span>
+</p></li>
+<li><strong>init</strong>
+<p class="md_block">
+    <span class="md_line">内核初始化代码，联系内核各组件的入口。</span>
+</p></li>
+<li><strong>ipc</strong>
+<p class="md_block">
+    <span class="md_line">进程间通信实现，如共享内存、信号量、匿名管道等。</span>
+</p></li>
+<li><strong>kernel</strong>
+<p class="md_block">
+    <span class="md_line">内核核心代码，包含进程管理、IRQ、时间等。</span>
+</p></li>
+<li><strong>lib</strong>
+<p class="md_block">
+    <span class="md_line">C标准库的子集，方便内核代码使用。</span>
+</p></li>
+<li><strong>mm</strong>
+<p class="md_block">
+    <span class="md_line">内存管理相关实现。</span>
+</p></li>
+<li><strong>net</strong>
+<p class="md_block">
+    <span class="md_line">网络协议代码，如TCP、IPv6、WiFi、以太网实现等。</span>
+</p></li>
+<li><strong>samples</strong>
+<p class="md_block">
+    <span class="md_line">内核实例代码，里面有尚未纳入内核代码的新功能，供内核开发新手参考入门使用。</span>
+</p></li>
+<li><strong>scripts</strong>
+<p class="md_block">
+    <span class="md_line">编译和配置内核所需脚本。基于Perl和Bash的脚本居多。</span>
+</p></li>
+<li><strong>security</strong>
+<p class="md_block">
+    <span class="md_line">内核安全模型相关的代码，例如最有名的SELINUX。</span>
+</p></li>
+<li><strong>sound</strong>
+<p class="md_block">
+    <span class="md_line">声卡驱动源码。</span>
+</p></li>
+<li><strong>tools</strong>
+<p class="md_block">
+    <span class="md_line">与内核交互，以便在用户态时测试相关内核功能。</span>
+</p></li>
+<li><strong>usr</strong>
+<p class="md_block">
+    <span class="md_line">用户打包和压缩内核的实现源码。</span>
+</p></li>
+<li><strong>virt/kvm</strong>
+<p class="md_block">
+    <span class="md_line">虚拟化相关支持实现。</span>
+</p></li>
+<li><strong>Kbuild</strong>
+<p class="md_block">
+    <span class="md_line">配置内核设定，如选择指定体系架构类型。</span>
+</p></li>
+<li><strong>Kconfig</strong>
+<p class="md_block">
+    <span class="md_line">配置内核时脚本，里面包含了可选项和菜单功能。</span>
+</p></li>
+</ul> </div>
+        </div>
+
+    </div>
+
+
+
+
+
+<script>
+    // auto focus for menu
+    window.onload = function(){
+        var sidebar = document.getElementById('sidebar');
+        var current = document.getElementsByClassName('selected')[0];
+        if (current && sidebar){
+            sidebar.scrollTop = current.offsetTop - sidebar.clientHeight/2 + 100
+        }
+    };
+</script>
+
+
+
+
+</body>
+
+</html>

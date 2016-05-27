@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在VPS上创建一个洋葱（onion）匿名站点</title>
+
+    <meta charset="UTF-8"/>
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+
+    <meta name="HandheldFriendly" content="true"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link href="../asset/farbox/basic.css" type="text/css" rel="stylesheet"/>
+    <link href="../asset/farbox/main.css" type="text/css" rel="stylesheet"/>
+
+    <style type="text/css">
+        
+            span.md_line{margin-bottom:0.5em; display:block; line-height:1.89}
+            .md_line br{ display: none;}
+            
+    </style>
+
+    <script>
+        var flowchat_options = {
+            'x': 0, 'y': 0, 'line-width': 1, 'line-length': 50, 'text-margin': 10, 'font-size': 13,
+            'font-color': '#3c3c3c', 'line-color': '#666666', 'element-color': '#666666', 'fill': 'transparent',
+            'yes-text': 'yes', 'no-text': 'no', 'arrow-end': 'block', 'class': 'flowchart', 'scale': 1,
+            'symbols': { 'start': {}, 'end': {}, 'condition': {}, 'inputoutput': {}, 'operation': {}, 'subroutine': {}}
+        }
+    </script>
+    <script type="text/javascript" src="../asset/other/raphael-min.js"></script>
+    <script type="text/javascript" src="../asset/other/flowchart.js"></script>
+    <script type="text/javascript" src="../asset/other/echarts.min.js"></script>
+
+
+</head>
+
+<body>
+    
+        <a href="../index.html" id="go_to_home"> &lt; home </a>
+    
+    <div id="sidebar">
+        <ul id="sidebar_body">
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Docker</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Docker/Docker安装说明.html" class="">Docker安装说明</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Linux Kernel</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/Linux内核源码目录结构.html" class="">内核源码目录结构</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/开机后引导流程.html" class="">开机后引导流程</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Troubleshooting</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Troubleshooting/Linux TCP网络程序故障排错.html" class="">Linux TCP网络程序故障排错</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">邪门歪道</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../邪门歪道/制作一只木马监控你的女盆友.html" class="">制作一只木马监控你的女盆友</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../邪门歪道/在VPS上创建一个洋葱（onion）匿名站点.html" class="selected">在VPS上创建一个洋葱（onion）匿名站点</a>
+                </li>
+                
+            </ul>
+            
+        
+        </ul>
+    </div>
+
+    <div id="main">
+        <div class="content_body">
+            <h1 class="title"> 在VPS上创建一个洋葱（onion）匿名站点 </h1>
+            <div class="doc_post"> <p class="md_block">
+    <span class="md_line">onion？你懂的，报道在此：http://internet.solidot.org/internet/12/06/12/1021203.shtml</span>
+</p>
+
+<hr>
+<p class="md_block">
+    <span class="md_line md_line_dom_embed"><strong>本文仅探讨技术，一切不良后果自负！</strong><br /></span>
+
+<div class="toc"><ul>
+<li>
+<a href="#toc_0">准备材料</a>
+</li>
+<li>
+<a href="#toc_1">配置服务</a>
+</li>
+<li>
+<a href="#toc_2">参考资料：</a>
+</li>
+</ul>
+</div>
+</p>
+
+<h2 id="toc_0">准备材料</h2>
+
+<ol>
+<li>linux vps一个（建议256mb 以上内存,Debian系统）</li>
+<li>lighttpd+php环境</li>
+</ol>
+<p class="md_block">
+    <span class="md_line">一切就绪准备开工!<br /></span>
+    <span class="md_line">升级下本地软件版本列表 </span>
+</p>
+<div class="codehilite "><pre><span class="c">#apt-get update</span>
+<span class="c">#apt-get upgrade</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">安装lighttpd和php环境</span>
+</p>
+<div class="codehilite "><pre><span class="c">#apt-get install lighttpd</span>
+<span class="c">#apt-get install php5-cgi</span>
+</pre></div>
+
+<h2 id="toc_1">配置服务</h2>
+<div class="codehilite "><pre><span class="c">#vim /etc/lighttpd/conf-enabled/10-cgi-php.conf</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">增添这两行：</span>
+</p>
+
+<pre><code>server.modules += (“mod_cgi”)
+cgi.assign = (“.php” =&gt; “/usr/bin/php5-cgi”)</code></pre>
+<p class="md_block">
+    <span class="md_line">保存后重启服务</span>
+</p>
+<div class="codehilite "><pre><span class="c">#/etc/init.d/lighttpd force-reload</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">默认情况下，你的web发布目录在/var/www/，可以添加一个index.html主页文件然后访问http://VPS的IP地址/  配置正常情况下可以访问到主页了。</span>
+</p>
+<p class="md_block">
+    <span class="md_line">接下来，修改下默认端口，如果你还想让别人即便不通过Tor也可以访问你公网服务，尽管忽略这步：</span>
+</p>
+<div class="codehilite "><pre><span class="c">#vim /etc/lighttpd/lighttpd.conf</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">添加下面这两行：</span>
+</p>
+
+<pre><code>server.port = 4999
+server.bind = “127.0.0.1”</code></pre>
+<p class="md_block">
+    <span class="md_line">server.port指定了一个新的服务端口可以随意修改一个没被占用的端口号，但要记住它，我们接下来配置tor还会用到。</span>
+</p>
+<p class="md_block">
+    <span class="md_line">再来重启服务：</span>
+</p>
+<div class="codehilite "><pre><span class="c">#/etc/init.d/lighttpd force-reload</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">再访问下试试看修改后的端口，是不是工作：<br /></span>
+    <span class="md_line">http://VPS的IP地址/    配置正常情况下可以访问到主页了。</span>
+</p>
+<p class="md_block">
+    <span class="md_line md_line_dom_embed"><strong>接下来配置Tor的时间到了！</strong></span>
+</p>
+<p class="md_block">
+    <span class="md_line">增添Tor仓库源到本地软件库列表</span>
+</p>
+<div class="codehilite "><pre><span class="c">#vim /etc/apt/sources.list</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">增添下面的指令到配置文件中：</span>
+</p>
+
+<pre><code>deb http://deb.torproject.org/torproject.org squeeze main</code></pre>
+<p class="md_block">
+    <span class="md_line">如果你使用的系统发行版不是Debian 6 ，那么修改“squeeze”为合适的发行名称。</span>
+</p>
+<p class="md_block">
+    <span class="md_line">由于是非官方源，所以还要增加GPG密钥：</span>
+</p>
+<div class="codehilite "><pre><span class="c">#gpg –keyserver keys.gnupg.net –recv 886DDD89</span>
+<span class="c">#gpg –export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add –</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">下面开始安装Tor</span>
+</p>
+<div class="codehilite "><pre><span class="c">#apt-get update</span>
+<span class="c">#apt-get install tor tor-geoipdb</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">安装并成功运行后，接下来还得配置Tor</span>
+</p>
+
+<pre><code>vim /etc/tor/torrc</code></pre>
+<p class="md_block">
+    <span class="md_line">将注释掉的部分修改为可用：</span>
+</p>
+
+<pre><code>HiddenServiceDir /var/lib/tor/hidden_service/
+HiddenServicePort 80 127.0.0.1:4999</code></pre>
+<p class="md_block">
+    <span class="md_line">注意端口号4999是之前配置lighttpd的端口号，要对应一致。</span>
+</p>
+<p class="md_block">
+    <span class="md_line">重启Tor：</span>
+</p>
+<div class="codehilite "><pre><span class="c">#/etc/init.d/tor restart</span>
+</pre></div>
+<p class="md_block">
+    <span class="md_line">不出意外，洋葱站点搭建成功了，那又如何知道我的洋葱网站地址呢？</span>
+</p>
+<p class="md_block">
+    <span class="md_line">都写在了这个文件里：</span>
+</p>
+
+<pre><code>/var/lib/tor/hidden_service/hostname</code></pre>
+<p class="md_block">
+    <span class="md_line">里面就是地址了，比如anfiejd3rv25tkh4.onion<br /></span>
+    <span class="md_line">在没有安装Tor的客户端上你可以使用tor2web网站服务在线访问你的洋葱网络：<br /></span>
+    <span class="md_line">比如在客户端浏览器里访问：http://anfiejd3rv25tkh4.tor2web.org</span>
+</p>
+<p class="md_block">
+    <span class="md_line md_line_dom_embed"><strong>大功告成。</strong></span>
+</p>
+
+<h2 id="toc_2">参考资料：</h2>
+<p class="md_block">
+    <span class="md_line md_line_dom_embed"><a href="http://kendildonic.wordpress.com/2011/08/03/build-a-tor-hidden-service-onion-web-site-with-a-cheap-vps/">Build a Tor hidden service onion web site with a cheap VPS</a><br /></span>
+    <span class="md_line md_line_dom_embed"><a href="https://www.torproject.org/docs/tor-hidden-service.html.en">Configuring Hidden Services for Tor</a><br /></span>
+    <span class="md_line md_line_dom_embed"><a href="http://wiki.ubuntu.org.cn/Apt-get%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97">apt-get使用指南</a><br /></span>
+    <span class="md_line md_line_dom_embed"><a href="http://tor2web.org/">tor2web: visit anonymous websites</a></span>
+</p> </div>
+        </div>
+
+    </div>
+
+
+
+
+
+<script>
+    // auto focus for menu
+    window.onload = function(){
+        var sidebar = document.getElementById('sidebar');
+        var current = document.getElementsByClassName('selected')[0];
+        if (current && sidebar){
+            sidebar.scrollTop = current.offsetTop - sidebar.clientHeight/2 + 100
+        }
+    };
+</script>
+
+
+
+
+</body>
+
+</html>

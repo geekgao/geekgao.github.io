@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Linux TCP网络程序故障排错</title>
+
+    <meta charset="UTF-8"/>
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+
+    <meta name="HandheldFriendly" content="true"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link href="../asset/farbox/basic.css" type="text/css" rel="stylesheet"/>
+    <link href="../asset/farbox/main.css" type="text/css" rel="stylesheet"/>
+
+    <style type="text/css">
+        
+            span.md_line{margin-bottom:0.5em; display:block; line-height:1.89}
+            .md_line br{ display: none;}
+            
+    </style>
+
+    <script>
+        var flowchat_options = {
+            'x': 0, 'y': 0, 'line-width': 1, 'line-length': 50, 'text-margin': 10, 'font-size': 13,
+            'font-color': '#3c3c3c', 'line-color': '#666666', 'element-color': '#666666', 'fill': 'transparent',
+            'yes-text': 'yes', 'no-text': 'no', 'arrow-end': 'block', 'class': 'flowchart', 'scale': 1,
+            'symbols': { 'start': {}, 'end': {}, 'condition': {}, 'inputoutput': {}, 'operation': {}, 'subroutine': {}}
+        }
+    </script>
+    <script type="text/javascript" src="../asset/other/raphael-min.js"></script>
+    <script type="text/javascript" src="../asset/other/flowchart.js"></script>
+    <script type="text/javascript" src="../asset/other/echarts.min.js"></script>
+
+
+</head>
+
+<body>
+    
+        <a href="../index.html" id="go_to_home"> &lt; home </a>
+    
+    <div id="sidebar">
+        <ul id="sidebar_body">
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Docker</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Docker/Docker安装说明.html" class="">Docker安装说明</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Linux Kernel</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/Linux内核源码目录结构.html" class="">内核源码目录结构</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/开机后引导流程.html" class="">开机后引导流程</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Linux Troubleshooting</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Troubleshooting/Linux TCP网络程序故障排错.html" class="selected">Linux TCP网络程序故障排错</a>
+                </li>
+                
+            </ul>
+            
+        
+        </ul>
+    </div>
+
+    <div id="main">
+        <div class="content_body">
+            <h1 class="title"> Linux TCP网络程序故障排错 </h1>
+            <div class="doc_post"> <h2 id="toc_1">问题：Kernel报错误信息Out of socket memory</h2>
+
+<h3 id="toc_2">分析</h3>
+<p class="md_block">
+    <span class="md_line">socket内存不足通常原因是TCP协议栈内存分配不足或有太多孤儿socket没有被系统及时回收掉。</span>
+</p>
+<p class="md_block">
+    <span class="md_line">但是，从dmesg中没有找到<code>too many orphaned sockets</code>的报错信息，所以，也可能不是孤儿socket导致的。但这仅仅为猜测，还需要通过逐步排查来发现问题根源。</span>
+</p>
+
+<h3 id="toc_3">排错过程</h3>
+<p class="md_block">
+    <span class="md_line">首先我们来检查下我们TCP协议栈内存占用情况吧，看这儿：</span>
+</p>
+
+<pre><code>#cat /proc/sys/net/ipv4/tcp_mem
+21180   28243   42360</code></pre>
+<p class="md_block">
+    <span class="md_line"> 简单解释下输出的三组数字的含义：</span>
+</p>
+
+<ul>
+<li>最左边代表最小分配内存，低于此值系统没任何问题。</li>
+<li>中间的值被称为压力值，如果最小内存分配已经超出，那么系统会根据这个值对TCP内存做出动态调整，以应付突发情况。</li>
+<li>最右侧的值为TCP内存最大分配值，也代表设定的极限了，如果超出这个值，系统就会记录错误信息：Out of socket memory</li>
+</ul>
+<p class="md_block">
+    <span class="md_line">OK，接下来，我们看一下当前TCP实际的使用内存的情况：</span>
+</p>
+
+<pre><code>#cat /proc/net/sockstat
+sockets: used 39845
+TCP: inuse 125217 orphan 65738 tw 103758 alloc 121429 mem 22016
+UDP: inuse 12 mem 6
+UDPLITE: inuse 0
+RAW: inuse 1
+FRAG: inuse 0 memory 0</code></pre>
+<p class="md_block">
+    <span class="md_line">通过输出项<code>“mem 22016”</code>，我们与tcp_mem输出比较下，显然在我们设定的压力值范围内，因此，tcp_mem相关设定就不用继续排查了，继续查是否是“孤儿”导致的问题：</span>
+</p>
+
+<pre><code>#cat /proc/sys/net/ipv4/tcp_max_orphans
+65536</code></pre>
+<p class="md_block">
+    <span class="md_line">输出的是系统当前设定的TCP孤儿数量最大值。与之前socktstat输出的<code>“orphan 65738”</code>对比，显然，是超出了当前设定的范围。是“孤儿”导致的问题。</span>
+</p>
+
+<h3 id="toc_4">结论</h3>
+<p class="md_block">
+    <span class="md_line md_line_dom_embed"><strong>关于tcp_max_orphans的设定说明：</strong><br /></span>
+    <span class="md_line">系统默认可以处理的不属于任何进程的TCP sockets的最大值，一个孤儿socket要占用64K的不可交换内存！设计初衷是为了避免系统被简单DOS（拒绝服务攻击）后无穷尽的消耗TCP内存，导致网络服务彻底瘫痪所设计的一个阈值限制。<br /></span>
+    <span class="md_line">判断此值的函数实现代码参见：<a href="http://lxr.free-electrons.com/source/include/net/tcp.h#L307">net/tcp.h#L307</a><br /></span>
+    <span class="md_line"><strong>如果你的内存够大，也可以适当增加tcp_max_orphans的值，但这时候要注意一个原则：</strong>设置的新数值需是2或4的倍数，因为内核要x2或x4 增加问题socket的score以处罚（penalize，见代码）：</span>
+</p>
+
+<pre><code>#echo 262144 /proc/sys/net/ipv4/tcp_max_orphans</code></pre>
+<p class="md_block">
+    <span class="md_line">参考链接：<br /></span>
+    <span class="md_line md_line_dom_embed"><a href="http://lartc.org/howto/lartc.kernel.obscure.html">http://lartc.org/howto/lartc.kernel.obscure.html</a><br /></span>
+    <span class="md_line md_line_dom_embed"><a href="http://www.linuxfoundation.org/collaborate/workgroups/networking/ip-sysctl">http://www.linuxfoundation.org/collaborate/workgroups/networking/ip-sysctl</a></span>
+</p> </div>
+        </div>
+
+    </div>
+
+
+
+
+
+<script>
+    // auto focus for menu
+    window.onload = function(){
+        var sidebar = document.getElementById('sidebar');
+        var current = document.getElementsByClassName('selected')[0];
+        if (current && sidebar){
+            sidebar.scrollTop = current.offsetTop - sidebar.clientHeight/2 + 100
+        }
+    };
+</script>
+
+
+
+
+</body>
+
+</html>

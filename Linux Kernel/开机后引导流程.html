@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>开机后引导流程</title>
+
+    <meta charset="UTF-8"/>
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+
+    <meta name="HandheldFriendly" content="true"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <link href="../asset/farbox/basic.css" type="text/css" rel="stylesheet"/>
+    <link href="../asset/farbox/main.css" type="text/css" rel="stylesheet"/>
+
+    <style type="text/css">
+        
+            span.md_line{margin-bottom:0.5em; display:block; line-height:1.89}
+            .md_line br{ display: none;}
+            
+    </style>
+
+    <script>
+        var flowchat_options = {
+            'x': 0, 'y': 0, 'line-width': 1, 'line-length': 50, 'text-margin': 10, 'font-size': 13,
+            'font-color': '#3c3c3c', 'line-color': '#666666', 'element-color': '#666666', 'fill': 'transparent',
+            'yes-text': 'yes', 'no-text': 'no', 'arrow-end': 'block', 'class': 'flowchart', 'scale': 1,
+            'symbols': { 'start': {}, 'end': {}, 'condition': {}, 'inputoutput': {}, 'operation': {}, 'subroutine': {}}
+        }
+    </script>
+    <script type="text/javascript" src="../asset/other/raphael-min.js"></script>
+    <script type="text/javascript" src="../asset/other/flowchart.js"></script>
+    <script type="text/javascript" src="../asset/other/echarts.min.js"></script>
+
+
+</head>
+
+<body>
+    
+        <a href="../index.html" id="go_to_home"> &lt; home </a>
+    
+    <div id="sidebar">
+        <ul id="sidebar_body">
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Docker</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Docker/Docker安装说明.html" class="">Docker安装说明</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Life</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Life/吐给27岁自己的槽.html" class="">吐给27岁自己的槽</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Linux Kernel</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/Linux内核源码目录结构.html" class="">内核源码目录结构</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Linux Kernel/开机后引导流程.html" class="selected">开机后引导流程</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">Troubleshooting</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../Troubleshooting/Linux TCP网络程序故障排错.html" class="">Linux TCP网络程序故障排错</a>
+                </li>
+                
+            </ul>
+            
+        
+            
+            
+            
+            
+
+            
+                
+                <li class="level_1 directory not_valid_directory">
+                    <a href="#" class="">邪门歪道</a>
+                </li>
+            
+
+            
+            <ul>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../邪门歪道/制作一只木马监控你的女盆友.html" class="">制作一只木马监控你的女盆友</a>
+                </li>
+                
+                
+                
+                
+                 <li class="level_2">
+                    <a href="../邪门歪道/在VPS上创建一个洋葱匿名站点.html" class="">在VPS上创建一个洋葱匿名站点</a>
+                </li>
+                
+            </ul>
+            
+        
+        </ul>
+    </div>
+
+    <div id="main">
+        <div class="content_body">
+            <h1 class="title"> 开机后引导流程 </h1>
+            <div class="doc_post"> <p class="md_block">
+
+<div class="toc"><ul>
+<li>
+<a href="#toc_1">大致流程</a>
+</li>
+<li>
+<a href="#toc_2">相关技术背景</a>
+</li>
+<li>
+<a href="#toc_3">引导过程</a>
+</li>
+<li>
+<a href="#toc_4">参考</a>
+</li>
+</ul></div>
+</p>
+
+
+<h2 id="toc_1">大致流程</h2>
+
+    <div id="ZaheDdsffFmtBGwMyFH6aVk" class="flow-graphic"> </div>
+    <script>
+    var diagram = flowchart.parse('st=>start:  启动BIOS\ndo1=>operation:  准备实模式下中断向量表和中断服务程序\ndo2=>operation:  加载磁盘第一扇区指定位置上(MBR)的引导程序\ndo3=>end:  继续引导其他程序载入内存\n\nst->do1->do2->do3\n');
+    diagram.drawSVG('ZaheDdsffFmtBGwMyFH6aVk');
+    </script>
+    
+<!--block_code_end-->
+<h2 id="toc_2">相关技术背景</h2>
+
+<p class="md_block">
+    <span class="md_line">CPU大厂Intel早年与PC主板制造商约定，开机后首先进入16位实模式，并将CS寄存器默认置为0xFFFF，IP寄存器置为0x0000，因此CS:IP指向地址0xFFFF0，这时候呢，便可以从0xFFFF0加载BIOS程序了。<br /></span>
+    <span class="md_line">存储在主板ROM存储器中的BIOS程序载入内存执行相应程序指令完成PC机的自检工作。对操作系统而言，它还完成了一项非常重要的事情：建立和载入中断向量表和中断服务程序到内存。</span>
+</p>
+
+
+<p class="md_block">
+    <span class="md_line">MBR中的引导程序是一个512字节的映像，由446字节的程序代码和64字节的分区表组成。最后面的两字节（约定为55AA）是标记MBR结束的记号。如果不是这个标记，那么便会继续读取其他存储设备的引导区，还是找不到的话就输错误信息到屏幕：&quot;NO ROM BASIC&quot;，然后等着重启或关机了。<br /></span>
+    <span class="md_line">CPU会与BIOS“联手”使用int 0x19这个中断，然后，CPU从中断向量表找到对应中断向量的位置，找到对应中断服务程序所在的内存地址，这个中断服务的功能便是加载MBR映像到内存了。</span>
+</p>
+
+<em>注：记得10年前读中学的时候对这启动过程稍有些了解，问为什么MBR引导程序是512字节、为啥是int 0x19这个中断…… 直到后来才知道，因为这就是传说的“约定”，有了这个约定，操作系统厂商、BIOS厂商、CPU厂商就不会为兼容性问题而很恼火了。这点不知道是不是应该感谢牛叉的IBM和Microsoft，有空再查查这方面的史料吧。</em>
+<h2 id="toc_3">引导过程</h2>
+
+<p class="md_block md_has_block_below md_has_block_below_ol">
+    <span class="md_line">X86体系架构的操作系统引导过程：</span>
+</p>
+
+
+<ol>
+<li>CPU初始化</li>
+<li>BIOS自检</li>
+<li>加载内核引导程序</li>
+<li>内核引导程序逐步引导其他引导程序或过程：主引导、次引导、内核</li>
+</ol>
+
+<h2 id="toc_4">参考</h2>
+<a href="http://">主引导记录</a>
+<a href="http://baike.baidu.com/view/994002.htm">中断向量表</a> </div>
+        </div>
+
+    </div>
+
+
+
+
+
+<script>
+    // auto focus for menu
+    window.onload = function(){
+        var sidebar = document.getElementById('sidebar');
+        var current = document.getElementsByClassName('selected')[0];
+        if (current && sidebar){
+            sidebar.scrollTop = current.offsetTop - sidebar.clientHeight/2 + 100
+        }
+    };
+</script>
+
+
+
+
+</body>
+
+</html>
